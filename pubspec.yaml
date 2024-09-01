@@ -1,0 +1,37 @@
+name: dunder_mifflin
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.1
+
+dependencies:
+  carousel_slider: ^5.0.0
+  flutter:
+    sdk: flutter
+  flutter_keyboard_visibility: ^6.0.0
+  flutter_native_splash: ^2.4.1
+  flutter_svg: ^2.0.10+1
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/splashscreen.png
+    - assets/images/product-1.png
+    - assets/images/product-2.png
+    - assets/images/profile.png
+    - assets/icons/home.svg
+    - assets/icons/home-active.svg
+    - assets/icons/products.svg
+    - assets/icons/products-active.svg
+    - assets/icons/notifications.svg
+    - assets/icons/notifications-active.svg
+    - assets/icons/menu.svg
+    - assets/icons/headphone.svg
