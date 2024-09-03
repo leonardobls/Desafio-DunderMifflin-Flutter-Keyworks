@@ -1,3 +1,4 @@
+import 'package:dunder_mifflin/components/loading_global.dart';
 import 'package:dunder_mifflin/config/app_styles.dart';
 import 'package:dunder_mifflin/data/blocs/login_bloc.dart';
 import 'package:dunder_mifflin/data/blocs/login_event.dart';
@@ -25,7 +26,7 @@ class _LoginState extends State<Login> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  late User user = User();
+  late UserLogin user = UserLogin();
 
   var keyboardVisibilityController = KeyboardVisibilityController();
   bool isKeyboardVisible = false;
@@ -55,14 +56,52 @@ class _LoginState extends State<Login> {
           stream: _loginBloc.outputLogin,
           builder: (context, state) {
             if (state.data is LoginLoadingState) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const LoadingGlobal();
+            }
+
+            if (state.data is LoginLoadedState) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    settings: const RouteSettings(name: "home"),
+                    pageBuilder: (context, animation1, animation2) =>
+                        const Home(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                  ),
+                );
+              });
             }
 
             if (state.data is LoginErrorState) {
-              return const Center(child: Text("error"));
+              WidgetsBinding.instance.addPostFrameCallback(
+                (_) {
+                  _loginBloc.inputLogin.add(CloseDilog());
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      print("ABRIU");
+                      return AlertDialog(
+                        title: const Text("Erro de Login"),
+                        content: const Text(
+                            "Ocorreu um erro durante o login. Por favor, tente novamente."),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
             }
+
             return SafeArea(
               child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
@@ -199,20 +238,6 @@ class _LoginState extends State<Login> {
 
                                     _loginBloc.inputLogin
                                         .add(PostLogin(user: user));
-
-                                    // Navigator.push(
-                                    //   context,
-                                    //   PageRouteBuilder(
-                                    //     settings:
-                                    //         const RouteSettings(name: "home"),
-                                    //     pageBuilder:
-                                    //         (context, animation1, animation2) =>
-                                    //             const Home(),
-                                    //     transitionDuration: Duration.zero,
-                                    //     reverseTransitionDuration:
-                                    //         Duration.zero,
-                                    //   ),
-                                    // );
                                   }
                                 },
                                 child: Container(

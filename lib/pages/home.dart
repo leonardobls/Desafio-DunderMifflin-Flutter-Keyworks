@@ -1,13 +1,10 @@
-import 'dart:io';
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dunder_mifflin/components/bottom_bar.dart';
 import 'package:dunder_mifflin/config/app_styles.dart';
 import 'package:dunder_mifflin/data/models/product_model.dart';
 import 'package:dunder_mifflin/pages/menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:path/path.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -21,33 +18,64 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    initialization();
   }
 
-  List<Product> mockProdutos = [
-    Product(
-      name: "Papel para Sublimação LIVE A4",
-      price: "500,00",
-      images: [
+  List<Map<String, dynamic>> mockProdutos = [
+    {
+      'id': 1,
+      'name': "Papel para Sublimação LIVE A4",
+      'description': "Descrição do produto 1",
+      'additionalDescription': "Descrição adicional do produto 1",
+      'situation': true,
+      'categoryId': 1,
+      'subCategoryId': 1,
+      'categoryName': "Categoria 1",
+      'subCategoryName': "Subcategoria 1",
+      'filesQuantity': 2,
+      'currentPrice': 50000, // Representando 500,00 em centavos
+      'price': "500,00",
+      'images': [
         "assets/images/product-1.png",
         "assets/images/product-2.png",
       ],
-    ),
-    Product(
-      name: "Papel para Sublimação LIVE A4",
-      price: "12,00",
-      images: [
+    },
+    {
+      'id': 2,
+      'name': "Papel para Sublimação LIVE A4",
+      'description': "Descrição do produto 2",
+      'additionalDescription': "Descrição adicional do produto 2",
+      'situation': true,
+      'categoryId': 1,
+      'subCategoryId': 2,
+      'categoryName': "Categoria 1",
+      'subCategoryName': "Subcategoria 2",
+      'filesQuantity': 2,
+      'currentPrice': 1200, // Representando 12,00 em centavos
+      'price': "12,00",
+      'images': [
         "assets/images/product-1.png",
         "assets/images/product-2.png",
       ],
-    ),
-    Product(
-      name: "Produto 3",
-      price: "500,00",
-      images: [
+    },
+    {
+      'id': 3,
+      'name': "Produto 3",
+      'description': "Descrição do produto 3",
+      'additionalDescription': "Descrição adicional do produto 3",
+      'situation': true,
+      'categoryId': 2,
+      'subCategoryId': 1,
+      'categoryName': "Categoria 2",
+      'subCategoryName': "Subcategoria 1",
+      'filesQuantity': 2,
+      'currentPrice': 50000, // Representando 500,00 em centavos
+      'price': "500,00",
+      'images': [
         "assets/images/product-1.png",
         "assets/images/product-2.png",
       ],
-    ),
+    },
   ];
 
   @override
@@ -62,17 +90,13 @@ class _HomeState extends State<Home> {
               context,
               PageRouteBuilder(
                 settings: const RouteSettings(name: "menu"),
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    const Menu(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  const begin =
-                      Offset(-1.0, 0.0); // Início fora da tela à esquerda
+                pageBuilder: (context, animation, secondaryAnimation) => const Menu(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(-1.0, 0.0); // Início fora da tela à esquerda
                   const end = Offset.zero; // Final na posição original
                   const curve = Curves.easeInOut;
 
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: curve));
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
                   var offsetAnimation = animation.drive(tween);
 
                   return SlideTransition(
@@ -80,8 +104,7 @@ class _HomeState extends State<Home> {
                     child: child,
                   );
                 },
-                transitionDuration:
-                    const Duration(milliseconds: 300), // Duração da animação
+                transitionDuration: const Duration(milliseconds: 300), // Duração da animação
               ),
             );
           },
@@ -119,53 +142,61 @@ class _HomeState extends State<Home> {
                 ),
               ),
               SizedBox(
-                height: 250,
-                child: ListView.separated(
-                  itemCount: mockProdutos.length,
-                  scrollDirection: Axis.horizontal,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: 10),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: 160,
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            mockProdutos[index].images!.first,
-                            width: double.infinity,
-                            height: 160,
-                            fit: BoxFit.cover,
-                          ),
-                          Text(
-                            mockProdutos[index].name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
+                  height: 250,
+                  child: ListView.separated(
+                    itemCount: mockProdutos.length,
+                    scrollDirection: Axis.horizontal,
+                    separatorBuilder: (context, index) => const SizedBox(width: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemBuilder: (BuildContext context, int index) {
+                      // Acesso aos dados a partir do mapa
+                      final product = mockProdutos[index];
+                      final imageUrl = product['images']?.first ?? ''; // Verifica se 'images' não é null e usa o primeiro item
+                      final name = product['name'] ?? 'Nome do produto';
+                      final price = product['price'] ?? 'Preço não disponível';
+
+                      return SizedBox(
+                        width: 160,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Exibe a imagem do produto
+                            Image.asset(
+                              imageUrl,
+                              width: double.infinity,
+                              height: 160,
+                              fit: BoxFit.cover,
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              mockProdutos[index].price,
+                            // Exibe o nome do produto
+                            Text(
+                              name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontFamily: "Roboto",
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                color: AppStyles.secondaryColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
+                            // Exibe o preço do produto
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                price,
+                                style: const TextStyle(
+                                  fontFamily: "Roboto",
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppStyles.secondaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  )),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 20,
@@ -210,5 +241,21 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  void initialization() async {
+    print('ready in 3...');
+    await Future.delayed(const Duration(seconds: 1));
+    print('ready in 2...');
+    await Future.delayed(const Duration(seconds: 1));
+    print('ready in 1...');
+    await Future.delayed(const Duration(seconds: 1));
+    print('go!');
+    FlutterNativeSplash.remove();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

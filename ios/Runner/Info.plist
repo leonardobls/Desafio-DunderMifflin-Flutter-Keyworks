@@ -47,5 +47,13 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+
+		<!-- Permissões de Privacidade -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Este aplicativo precisa acessar sua biblioteca de fotos para você poder escolher imagens.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Este aplicativo precisa acessar sua câmera para você poder tirar fotos ou gravar vídeos.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Este aplicativo precisa acessar seu microfone para gravar áudio durante vídeos.</string>
 	</dict>
 </plist>

@@ -14,6 +14,9 @@ dependencies:
   flutter_native_splash: ^2.4.1
   flutter_svg: ^2.0.10+1
   http: ^1.2.2
+  image_picker: ^1.1.2
+  path_provider: ^2.1.4
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:
@@ -27,6 +30,8 @@ flutter:
     - assets/images/product-1.png
     - assets/images/product-2.png
     - assets/images/profile.png
+    - assets/images/loader.png
+    - assets/images/default-profile.png
     - assets/icons/home.svg
     - assets/icons/home-active.svg
     - assets/icons/products.svg

@@ -1,25 +1,26 @@
 import 'package:dunder_mifflin/data/models/user_model.dart';
 
 abstract class LoginState {
-  final User user;
+  final UserLogin? user;
+  final UserResponse? userResponse;
 
-  LoginState({required this.user});
+  LoginState({this.user, this.userResponse});
 }
 
 class LoginInitialState extends LoginState {
-  LoginInitialState() : super(user: User());
+  LoginInitialState() : super(user: UserLogin());
 }
 
 class LoginLoadingState extends LoginState {
-  LoginLoadingState() : super(user: User());
+  LoginLoadingState() : super(user: UserLogin());
 }
 
 class LoginLoadedState extends LoginState {
-  LoginLoadedState({required super.user});
+  LoginLoadedState({required super.userResponse});
 }
 
 class LoginErrorState extends LoginState {
   final Exception exception;
 
-  LoginErrorState({required this.exception}) : super(user: User());
+  LoginErrorState({required this.exception}) : super(user: UserLogin());
 }

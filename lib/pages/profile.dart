@@ -1,5 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dunder_mifflin/components/loading_global.dart';
 import 'package:dunder_mifflin/config/app_styles.dart';
+import 'package:dunder_mifflin/data/blocs/profile_bloc.dart';
+import 'package:dunder_mifflin/data/blocs/profile_event.dart';
+import 'package:dunder_mifflin/data/blocs/profile_state.dart';
+import 'package:dunder_mifflin/data/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Profile extends StatefulWidget {
   const Profile({
@@ -10,16 +19,27 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late final ProfileBloc _profileBloc;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _biographyController = TextEditingController();
+
+  bool wasInserted = false;
+  File? _selectedImage;
+
+  User userToUpdate = User();
 
   @override
   void initState() {
     super.initState();
+    _profileBloc = ProfileBloc();
+    _profileBloc.inputProfile.add(GetProfile());
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Route: ${ModalRoute.of(context)!.settings.name}");
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -41,245 +61,400 @@ class _ProfileState extends State<Profile> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 10,
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFD8E2FF),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(5),
+      body: StreamBuilder<ProfileState>(
+          stream: _profileBloc.outputProfile,
+          builder: (context, state) {
+            if (state.data is ProfileLoadingState) {
+              return const LoadingGlobal();
+            }
+            if (state.data is ProfileLoadedState) {
+              final UserProfile profile = state.data?.userProfile ?? UserProfile();
+              _nameController.text = profile.user!.name != null && profile.user!.name!.isNotEmpty ? profile.user!.name! : "";
+
+              _emailController.text = profile.user!.emailAddress != null && profile.user!.emailAddress!.isNotEmpty ? profile.user!.emailAddress! : "";
+
+              _biographyController.text = profile.user!.biography != null && profile.user!.biography!.isNotEmpty ? profile.user!.biography! : "";
+
+              return SafeArea(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 10,
                     ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(500),
-                        ),
-                        child: SizedBox(
-                          width: 62,
-                          height: 62,
-                          child: Image.asset(
-                            "assets/images/profile.png",
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: "Nome Completo",
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 16,
-                          ),
-                          labelStyle: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                          ),
-                          errorStyle: TextStyle(
-                            color: AppStyles.errorColor,
-                          ),
-                          focusColor: AppStyles.primaryColor,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.primaryColor,
-                              width: 1,
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              useRootNavigator: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                              ),
+                              backgroundColor: AppStyles.primaryColor,
+                              builder: (BuildContext context) {
+                                return ImageModal();
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
                             ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.errorColor,
-                              width: 1,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFD8E2FF),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
                             ),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.errorColor,
-                              width: 1,
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black12,
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Campo obrigatório";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 45),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: "E-mail",
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 16,
-                          ),
-                          labelStyle: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                          ),
-                          errorStyle: TextStyle(
-                            color: AppStyles.errorColor,
-                          ),
-                          focusColor: AppStyles.primaryColor,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.primaryColor,
-                              width: 1,
-                            ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.errorColor,
-                              width: 1,
-                            ),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.errorColor,
-                              width: 1,
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black12,
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Campo obrigatório";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 45),
-                      TextFormField(
-                        maxLines: 8,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          hintText: "Biografia (opcional)",
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 16,
-                          ),
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            color: AppStyles.primaryGrayColor,
-                          ),
-                          errorStyle: TextStyle(
-                            color: AppStyles.errorColor,
-                          ),
-                          focusColor: AppStyles.primaryColor,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.primaryColor,
-                              width: 1,
-                            ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.errorColor,
-                              width: 1,
-                            ),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppStyles.errorColor,
-                              width: 1,
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black12,
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Campo obrigatório";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 45),
-                      InkWell(
-                        onTap: () async {},
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: AppStyles.primaryColor,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(200),
-                            ),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
-                                  Icons.save,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "Salvar",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(500),
                                   ),
+                                  child: SizedBox(
+                                    width: 62,
+                                    height: 62,
+                                    child: profile.user!.userPhoto != null && profile.user!.userPhoto!.isEmpty && !wasInserted
+                                        ? Image.asset(
+                                            "assets/images/default-profile.png",
+                                            fit: BoxFit.cover,
+                                          )
+                                        : !wasInserted
+                                            ? Image.file(
+                                                File(
+                                                  profile.user!.userPhoto!,
+                                                ),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.file(
+                                                _selectedImage!,
+                                                fit: BoxFit.cover,
+                                              ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: _nameController,
+                                decoration: const InputDecoration(
+                                  labelText: "Nome Completo",
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 16,
+                                  ),
+                                  labelStyle: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: AppStyles.errorColor,
+                                  ),
+                                  focusColor: AppStyles.primaryColor,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.primaryColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.errorColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.errorColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.black12,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Campo obrigatório";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 45),
+                              TextFormField(
+                                controller: _emailController,
+                                decoration: const InputDecoration(
+                                  labelText: "E-mail",
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 16,
+                                  ),
+                                  labelStyle: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: AppStyles.errorColor,
+                                  ),
+                                  focusColor: AppStyles.primaryColor,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.primaryColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.errorColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.errorColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.black12,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Campo obrigatório";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 45),
+                              TextFormField(
+                                controller: _biographyController,
+                                maxLines: 8,
+                                keyboardType: TextInputType.multiline,
+                                decoration: const InputDecoration(
+                                  hintText: "Biografia (opcional)",
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 16,
+                                  ),
+                                  hintStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Roboto',
+                                    color: AppStyles.primaryGrayColor,
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: AppStyles.errorColor,
+                                  ),
+                                  focusColor: AppStyles.primaryColor,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.primaryColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.errorColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppStyles.errorColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.black12,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Campo obrigatório";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 45),
+                              InkWell(
+                                onTap: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    userToUpdate.id = profile.user!.id;
+                                    userToUpdate.emailAddress = _emailController.text;
+                                    userToUpdate.name = _nameController.text;
+                                    userToUpdate.biography = _biographyController.text;
+
+                                    if (_selectedImage != null) {
+                                      String imageBase64 = base64Encode(_selectedImage!.readAsBytesSync());
+                                      userToUpdate.userPhoto = imageBase64;
+                                    }
+
+                                    _profileBloc.inputProfile.add(PostProfileChange(user: userToUpdate));
+                                  }
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    color: AppStyles.primaryColor,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(200),
+                                    ),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.save,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Salvar",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            ),
+              );
+            } else {
+              return const Center(
+                child: Text("Error"),
+              );
+            }
+          }),
+    );
+  }
+
+  Widget ImageModal() {
+    return SafeArea(
+      child: SizedBox(
+        width: double.infinity,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              InkWell(
+                onTap: () {
+                  _takePickFromCamera();
+                },
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                  child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    child: const Text(
+                      "Capturar nova imagem",
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              InkWell(
+                onTap: () {
+                  _pickImageFromGallery();
+                },
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                  child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    child: const Text(
+                      "Escolher nova imagem",
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (returnedImage != null) {
+      setState(() {
+        wasInserted = true;
+        _selectedImage = File(returnedImage.path);
+      });
+    }
+  }
+
+  Future _takePickFromCamera() async {
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (returnedImage != null) {
+      setState(() {
+        wasInserted = true;
+        _selectedImage = File(returnedImage.path);
+      });
+    }
   }
 }
