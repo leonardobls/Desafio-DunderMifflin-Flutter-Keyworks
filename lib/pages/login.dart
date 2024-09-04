@@ -65,8 +65,7 @@ class _LoginState extends State<Login> {
                   context,
                   PageRouteBuilder(
                     settings: const RouteSettings(name: "home"),
-                    pageBuilder: (context, animation1, animation2) =>
-                        const Home(),
+                    pageBuilder: (context, animation1, animation2) => const Home(),
                     transitionDuration: Duration.zero,
                     reverseTransitionDuration: Duration.zero,
                   ),
@@ -85,8 +84,7 @@ class _LoginState extends State<Login> {
                       print("ABRIU");
                       return AlertDialog(
                         title: const Text("Erro de Login"),
-                        content: const Text(
-                            "Ocorreu um erro durante o login. Por favor, tente novamente."),
+                        content: const Text("Ocorreu um erro durante o login. Por favor, tente novamente."),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -115,9 +113,7 @@ class _LoginState extends State<Login> {
                       children: [
                         AnimatedContainer(
                           width: MediaQuery.of(context).size.width,
-                          height: isKeyboardVisible
-                              ? MediaQuery.of(context).size.height * 0.20
-                              : MediaQuery.of(context).size.height * 0.40,
+                          height: isKeyboardVisible ? MediaQuery.of(context).size.height * 0.20 : MediaQuery.of(context).size.height * 0.40,
                           duration: const Duration(milliseconds: 250),
                           child: Image.asset(
                             "assets/images/splashscreen.png",
@@ -231,13 +227,11 @@ class _LoginState extends State<Login> {
                               InkWell(
                                 onTap: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    user.userNameOrEmailAddress =
-                                        _emailController.text;
+                                    user.userNameOrEmailAddress = _emailController.text;
                                     user.password = _passwordController.text;
                                     user.rememberClient = true;
 
-                                    _loginBloc.inputLogin
-                                        .add(PostLogin(user: user));
+                                    _loginBloc.inputLogin.add(PostLogin(user: user));
                                   }
                                 },
                                 child: Container(

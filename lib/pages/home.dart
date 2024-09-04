@@ -1,4 +1,5 @@
 import 'package:dunder_mifflin/components/bottom_bar.dart';
+import 'package:dunder_mifflin/components/solicitation_bottomsheet.dart';
 import 'package:dunder_mifflin/config/app_styles.dart';
 import 'package:dunder_mifflin/data/models/product_model.dart';
 import 'package:dunder_mifflin/pages/menu.dart';
@@ -204,6 +205,17 @@ class _HomeState extends State<Home> {
                   top: 20,
                 ),
                 child: InkWell(
+                  onTap: () {
+                    showModalBottomSheet<dynamic>(
+                        isScrollControlled: true,
+                        context: context,
+                        backgroundColor: Colors.white,
+                        builder: (BuildContext bc) {
+                          return const Wrap(
+                            children: <Widget>[SolicitationBottomsheet()],
+                          );
+                        });
+                  },
                   child: Container(
                     width: double.infinity,
                     decoration: const BoxDecoration(

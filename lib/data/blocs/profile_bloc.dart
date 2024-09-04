@@ -47,10 +47,10 @@ class ProfileBloc {
     }
 
     if (event is PostProfileChange) {
+      var responseProfileUpdate = await _repository.updateProfile(event.user);
       if (event.user.userPhoto != null && event.user.userPhoto!.isNotEmpty) {
         await _repository.updateImageProfile(event.user.userPhoto!);
       }
-      var responseProfileUpdate = await _repository.updateProfile(event.user);
 
       if (responseProfileUpdate) {
         userProfileResponse = await _repository.getProfile();
