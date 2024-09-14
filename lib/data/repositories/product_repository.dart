@@ -8,13 +8,18 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductRepository {
-  Future<List<Product>> getProducts(int page, String? searchTerm) async {
-    int skip = (page - 1) * 6;
+  Future<List<Product>> getProducts(int? page, String? searchTerm, int? limit) async {
     Uri url;
-    if (searchTerm != null && searchTerm.isNotEmpty) {
-      url = Uri.parse("${AppConfig.url}api/services/app/Produto/GetAll?SearchText=$searchTerm&SkipCount=$skip&MaxResultCount=6");
+    if (limit != null) {
+      url = Uri.parse("${AppConfig.url}api/services/app/Produto/GetAll?MaxResultCount=$limit");
     } else {
-      url = Uri.parse("${AppConfig.url}api/services/app/Produto/GetAll?SkipCount=$skip&MaxResultCount=6");
+      int skip = (page! - 1) * 6;
+
+      if (searchTerm != null && searchTerm.isNotEmpty) {
+        url = Uri.parse("${AppConfig.url}api/services/app/Produto/GetAll?SearchText=$searchTerm&SkipCount=$skip&MaxResultCount=6");
+      } else {
+        url = Uri.parse("${AppConfig.url}api/services/app/Produto/GetAll?SkipCount=$skip&MaxResultCount=6");
+      }
     }
 
     final prefs = await SharedPreferences.getInstance();
@@ -35,7 +40,6 @@ class ProductRepository {
 
         for (var product in productResponse.items) {
           if (product.file.imagem.isNotEmpty) {
-            // Salvando a imagem localmente e substituindo o caminho no produto
             product.file.imagem = await _saveImage(product.file.imagem, product.file.nome);
           }
         }

@@ -37,8 +37,7 @@ class _BottomBarState extends State<BottomBar> {
                     context,
                     PageRouteBuilder(
                       settings: const RouteSettings(name: "home"),
-                      pageBuilder: (context, animation1, animation2) =>
-                          const Home(),
+                      pageBuilder: (context, animation1, animation2) => const Home(),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                     ),
@@ -48,23 +47,24 @@ class _BottomBarState extends State<BottomBar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       decoration: BoxDecoration(
-                        color: ModalRoute.of(context)!.settings.name == "home"
-                            ? AppStyles.primaryColor
-                            : const Color.fromRGBO(0, 0, 0, 0),
+                        color: ModalRoute.of(context)!.settings.name == "home" ? AppStyles.primaryColor : const Color.fromRGBO(0, 0, 0, 0),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(200),
                         ),
                       ),
                       child: SvgPicture.asset(
-                        ModalRoute.of(context)!.settings.name == "home"
-                            ? "assets/icons/home-active.svg"
-                            : "assets/icons/home.svg",
+                        ModalRoute.of(context)!.settings.name == "home" ? "assets/icons/home-active.svg" : "assets/icons/home.svg",
                       ),
                     ),
-                    const Text("Tela Inicial"),
+                    const Text(
+                      "Tela Inicial",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -74,8 +74,7 @@ class _BottomBarState extends State<BottomBar> {
                     context,
                     PageRouteBuilder(
                       settings: const RouteSettings(name: "products"),
-                      pageBuilder: (context, animation1, animation2) =>
-                          const Products(),
+                      pageBuilder: (context, animation1, animation2) => const Products(),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                     ),
@@ -85,24 +84,21 @@ class _BottomBarState extends State<BottomBar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       decoration: BoxDecoration(
-                        color:
-                            ModalRoute.of(context)!.settings.name == "products"
-                                ? AppStyles.primaryColor
-                                : const Color.fromRGBO(0, 0, 0, 0),
+                        color: ModalRoute.of(context)!.settings.name == "products" ? AppStyles.primaryColor : const Color.fromRGBO(0, 0, 0, 0),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(200),
                         ),
                       ),
-                      child: SvgPicture.asset(
-                          ModalRoute.of(context)?.settings.name == "products"
-                              ? "assets/icons/products-active.svg"
-                              : "assets/icons/products.svg"),
+                      child: SvgPicture.asset(ModalRoute.of(context)?.settings.name == "products" ? "assets/icons/products-active.svg" : "assets/icons/products.svg"),
                     ),
                     const Text(
                       "Produtos",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -113,8 +109,7 @@ class _BottomBarState extends State<BottomBar> {
                     context,
                     PageRouteBuilder(
                       settings: const RouteSettings(name: "notifications"),
-                      pageBuilder: (context, animation1, animation2) =>
-                          const Notifications(),
+                      pageBuilder: (context, animation1, animation2) => const Notifications(),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                     ),
@@ -124,24 +119,24 @@ class _BottomBarState extends State<BottomBar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       decoration: BoxDecoration(
-                        color: ModalRoute.of(context)!.settings.name ==
-                                "notifications"
-                            ? AppStyles.primaryColor
-                            : const Color.fromRGBO(0, 0, 0, 0),
+                        color: ModalRoute.of(context)!.settings.name == "notifications" ? AppStyles.primaryColor : const Color.fromRGBO(0, 0, 0, 0),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(200),
                         ),
                       ),
                       child: SvgPicture.asset(
-                        ModalRoute.of(context)?.settings.name == "notifications"
-                            ? "assets/icons/notifications-active.svg"
-                            : "assets/icons/notifications.svg",
+                        ModalRoute.of(context)?.settings.name == "notifications" ? "assets/icons/notifications-active.svg" : "assets/icons/notifications.svg",
                       ),
                     ),
-                    const Text("Notificações"),
+                    const Text(
+                      "Notificações",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),

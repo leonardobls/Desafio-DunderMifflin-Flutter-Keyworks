@@ -24,7 +24,7 @@ class ProductBloc {
 
     if (event is GetProducts) {
       try {
-        final newProducts = await _repository.getProducts(event.page, event.searchTerm);
+        final newProducts = await _repository.getProducts(event.page, event.searchTerm, null);
         products = event.products;
         products.addAll(newProducts);
 

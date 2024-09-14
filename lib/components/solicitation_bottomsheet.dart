@@ -1,4 +1,5 @@
 import 'package:dunder_mifflin/config/app_styles.dart';
+import 'package:dunder_mifflin/data/models/solicitation_model.dart';
 import 'package:flutter/material.dart';
 
 class SolicitationBottomsheet extends StatefulWidget {
@@ -11,6 +12,44 @@ class SolicitationBottomsheet extends StatefulWidget {
 }
 
 class _SolicitationBottomsheetState extends State<SolicitationBottomsheet> {
+  List<SolicitationItem> solicitationItems = [
+    SolicitationItem(
+      title: 'Solução de problemas técnicos',
+      icon: const Icon(Icons.flash_on, size: 36),
+      isActive: false,
+    ),
+    SolicitationItem(
+      title: 'Marcação de visita para solução de problema técnico',
+      icon: const Icon(Icons.accessibility, size: 36),
+      isActive: false,
+    ),
+    SolicitationItem(
+      title: 'Dúvidas sobre utilização de algum produto ou serviço',
+      icon: const Icon(Icons.accessibility, size: 36),
+      isActive: false,
+    ),
+    SolicitationItem(
+      title: 'Cancelamento de pedido',
+      icon: const Icon(Icons.cancel, size: 36),
+      isActive: false,
+    ),
+    SolicitationItem(
+      title: 'Alteração de pedido',
+      icon: const Icon(Icons.refresh, size: 36),
+      isActive: false,
+    ),
+    SolicitationItem(
+      title: 'Redirecionamento para todos os setores da empresa',
+      icon: const Icon(Icons.accessibility, size: 36),
+      isActive: false,
+    ),
+    SolicitationItem(
+      title: 'Informações sobre produtos ou serviços',
+      icon: const Icon(Icons.arrow_forward, size: 36),
+      isActive: false,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,7 +60,7 @@ class _SolicitationBottomsheetState extends State<SolicitationBottomsheet> {
           SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Padding(
@@ -37,7 +76,6 @@ class _SolicitationBottomsheetState extends State<SolicitationBottomsheet> {
                       const Text(
                         "Solicitação de atendimento",
                         style: TextStyle(
-                          letterSpacing: -0.6,
                           fontSize: 24,
                         ),
                       ),
@@ -45,7 +83,7 @@ class _SolicitationBottomsheetState extends State<SolicitationBottomsheet> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Icon(Icons.close),
+                        child: const Icon(Icons.close),
                       ),
                     ],
                   ),
@@ -59,262 +97,48 @@ class _SolicitationBottomsheetState extends State<SolicitationBottomsheet> {
                     "Qual o motivo do atendimento?",
                     style: TextStyle(
                       fontSize: 28,
-                      letterSpacing: -1,
                       height: 1.2,
                     ),
                   ),
                 ),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
-                        ),
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Solução de problemas técnicos"),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: solicitationItems.length,
+                  itemBuilder: (context, index) {
+                    final item = solicitationItems[index];
+                    return InkWell(
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              color: Color(0xFFE3E2E6),
+                              width: 2,
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
+                        child: Row(
+                          children: [
+                            item.icon,
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: Text(
+                                item.title,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (item.isActive)
+                              const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                              ),
+                          ],
                         ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Text("Marcação de visita para solução de problema técnico"),
-                        ),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
-                        ),
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Solução de problemas técnicos"),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
-                        ),
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Solução de problemas técnicos"),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
-                        ),
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Solução de problemas técnicos"),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
-                        ),
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Solução de problemas técnicos"),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
-                        ),
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Solução de problemas técnicos"),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border.symmetric(
-                        horizontal: BorderSide(
-                          color: Color(0xFFE3E2E6), // Cor da borda
-                          width: 2, // Largura da borda
-                        ),
-                      ),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.flash_on),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Solução de problemas técnicos"),
-                        SizedBox(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: 100,
@@ -328,7 +152,7 @@ class _SolicitationBottomsheetState extends State<SolicitationBottomsheet> {
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
               child: Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -337,11 +161,11 @@ class _SolicitationBottomsheetState extends State<SolicitationBottomsheet> {
                     ),
                     InkWell(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        borderRadius: const BorderRadius.all(Radius.circular(100)),
                         child: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           color: AppStyles.primaryColor,
-                          child: Icon(
+                          child: const Icon(
                             Icons.arrow_forward,
                           ),
                         ),

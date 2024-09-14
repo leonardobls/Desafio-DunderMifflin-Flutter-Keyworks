@@ -67,17 +67,11 @@ class ProfileBloc {
   }
 
   Future<File> convertBase64ToFile(String base64String, String fileName) async {
-    // Decodifica a string Base64 em bytes
     Uint8List bytes = base64Decode(base64String);
-
-    // Obtém o diretório temporário ou um diretório específico para salvar a imagem
     Directory tempDir = await getTemporaryDirectory();
     String filePath = '${tempDir.path}/$fileName';
-
-    // Cria o arquivo e grava os bytes nele
     File file = File(filePath);
     await file.writeAsBytes(bytes);
-
     return file;
   }
 }

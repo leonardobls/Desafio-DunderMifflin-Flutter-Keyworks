@@ -28,17 +28,13 @@ class _NotificationsState extends State<Notifications> {
               context,
               PageRouteBuilder(
                 settings: const RouteSettings(name: "menu"),
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    const Menu(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  const begin =
-                      Offset(-1.0, 0.0); // Início fora da tela à esquerda
-                  const end = Offset.zero; // Final na posição original
+                pageBuilder: (context, animation, secondaryAnimation) => const Menu(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(-1.0, 0.0);
+                  const end = Offset.zero;
                   const curve = Curves.easeInOut;
 
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: curve));
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
                   var offsetAnimation = animation.drive(tween);
 
                   return SlideTransition(
@@ -46,8 +42,7 @@ class _NotificationsState extends State<Notifications> {
                     child: child,
                   );
                 },
-                transitionDuration:
-                    const Duration(milliseconds: 300), // Duração da animação
+                transitionDuration: const Duration(milliseconds: 300),
               ),
             );
           },
@@ -60,17 +55,13 @@ class _NotificationsState extends State<Notifications> {
                 context,
                 PageRouteBuilder(
                   settings: const RouteSettings(name: "profile"),
-                  pageBuilder: (context, animation, secondaryAnimation) =>
-                      const Profile(),
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                    const begin =
-                        Offset(-1.0, 0.0); // Início fora da tela à esquerda
-                    const end = Offset.zero; // Final na posição original
+                  pageBuilder: (context, animation, secondaryAnimation) => const Profile(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(-1.0, 0.0);
+                    const end = Offset.zero;
                     const curve = Curves.easeInOut;
 
-                    var tween = Tween(begin: begin, end: end)
-                        .chain(CurveTween(curve: curve));
+                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
                     var offsetAnimation = animation.drive(tween);
 
                     return SlideTransition(
@@ -78,8 +69,7 @@ class _NotificationsState extends State<Notifications> {
                       child: child,
                     );
                   },
-                  transitionDuration:
-                      const Duration(milliseconds: 300), // Duração da animação
+                  transitionDuration: const Duration(milliseconds: 300),
                 ),
               );
             },
